@@ -25,11 +25,6 @@ using Cleint.DataModel;
 using Cleint.DataModel.Tracing;
 using Cleint.Exceptions;
 using Cleint.Helper;
-using Cleint.DataModel.ILM;
-using Cleint.DataModel.Replication;
-using Cleint.DataModel.Tags;
-using Cleint.DataModel.ObjectLock;
-
 
 namespace Cleint;
 
@@ -273,7 +268,7 @@ public partial class MinioClient : IMinioClient
     /// <exception cref="BucketNotFoundException">When bucketName is invalid</exception>
     internal async Task<HttpRequestMessageBuilder> CreateRequest(
         HttpMethod method,
-        string bucketName = null,
+        string bucketName = "",
         string objectName = null,
         IDictionary<string, string> headerMap = null,
         string contentType = "application/octet-stream",
@@ -728,96 +723,6 @@ public partial class MinioClient : IMinioClient
                     HttpClient?.Dispose();
             disposedValue = true;
         }
-    }
-
-    Task<LifecycleConfiguration> IMinioClient.GetBucketLifecycleAsync(GetBucketLifecycleArgs args, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    Task<BucketNotification> IMinioClient.GetBucketNotificationsAsync(GetBucketNotificationsArgs args, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    Task<ReplicationConfiguration> IMinioClient.GetBucketReplicationAsync(GetBucketReplicationArgs args, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    Task<Tagging> IMinioClient.GetBucketTagsAsync(GetBucketTagsArgs args, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    Task<ObjectStat> IMinioClient.GetObjectAsync(GetObjectArgs args, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    Task<ObjectLockConfiguration> IMinioClient.GetObjectLockConfigurationAsync(GetObjectLockConfigurationArgs args, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    Task<ObjectRetentionConfiguration> IMinioClient.GetObjectRetentionAsync(GetObjectRetentionArgs args, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    Task<Tagging> IMinioClient.GetObjectTagsAsync(GetObjectTagsArgs args, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    Task<VersioningConfiguration> IMinioClient.GetVersioningAsync(GetVersioningArgs args, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    Task<ListAllMyBucketsResult> IMinioClient.ListBucketsAsync(CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    IObservable<MinioNotificationRaw> IMinioClient.ListenBucketNotificationsAsync(ListenBucketNotificationsArgs args, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    public IObservable<MinioNotificationRaw> ListenBucketNotificationsAsync(string bucketName, IList<EventType> events, string prefix = "", string suffix = "", CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    IObservable<Upload> IMinioClient.ListIncompleteUploads(ListIncompleteUploadsArgs args, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    IObservable<Item> IMinioClient.ListObjectsAsync(ListObjectsArgs args, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<(Uri, IDictionary<string, string>)> PresignedPostPolicyAsync(PostPolicy policy)
-    {
-        throw new NotImplementedException();
-    }
-
-    Task<IObservable<DeleteError>> IMinioClient.RemoveObjectsAsync(RemoveObjectsArgs args, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    Task<SelectResponseStream> IMinioClient.SelectObjectContentAsync(SelectObjectContentArgs args, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    Task<ObjectStat> IMinioClient.StatObjectAsync(StatObjectArgs args, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
     }
 }
 

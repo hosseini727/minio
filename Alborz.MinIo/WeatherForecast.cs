@@ -1,4 +1,4 @@
-namespace MinIo
+namespace Alborz.MinIo
 {
     public class WeatherForecast
     {
