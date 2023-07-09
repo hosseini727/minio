@@ -15,8 +15,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddScoped<IMinioServices, MinioServices>();
 
-
-builder.Services.AddScoped<IMinioClient, MinioClient>();
+builder.Services.AddScoped<MinioClient, MinioClient>();
 
 
 builder.Host.UseSerilog((ctx, lc) => lc

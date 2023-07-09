@@ -38,5 +38,5 @@ public class Expiration : Duration
         ExpiredObjectDeleteMarker = default;
     }
 
-    [XmlIgnore] public bool? ExpiredObjectDeleteMarker { get; set; }
+    [XmlIgnore] public bool? ExpiredObjectDeleteMarker { get; set; }  
 }

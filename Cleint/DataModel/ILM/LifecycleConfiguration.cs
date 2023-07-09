@@ -32,6 +32,8 @@ namespace Cleint.DataModel.ILM;
 [XmlRoot(ElementName = "LifecycleConfiguration")]
 public class LifecycleConfiguration
 {
+    public static Stream xml;
+
     public LifecycleConfiguration()
     {
     }
@@ -83,5 +85,6 @@ public class LifecycleConfiguration
         }
 
         return str;
+        //return str = "<LifecycleConfiguration><Rule><ID>my-other-rule</ID><Filter><Prefix>my-other-prefix</Prefix></Filter><Transitions><Transition><Days>90</Days><StorageClass></StorageClass></Transition></Transitions><Status>Enabled</Status></Rule></LifecycleConfiguration>";
     }
 }

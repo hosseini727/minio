@@ -268,7 +268,7 @@ public partial class MinioClient : IMinioClient
     /// <exception cref="BucketNotFoundException">When bucketName is invalid</exception>
     internal async Task<HttpRequestMessageBuilder> CreateRequest(
         HttpMethod method,
-        string bucketName = "",
+        string bucketName = null,
         string objectName = null,
         IDictionary<string, string> headerMap = null,
         string contentType = "application/octet-stream",
