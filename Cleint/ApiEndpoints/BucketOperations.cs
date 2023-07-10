@@ -188,10 +188,16 @@ public partial class MinioClient : IBucketOperations
     ///     For example, if you call ListObjectsAsync on a bucket with versioning
     ///     enabled or object lock enabled
     /// </exception>
-    public IObservable<Item> ListObjectsAsync(ListObjectsArgs args, CancellationToken cancellationToken = default)
+    /// 
+    public List<object> ListObject(ListObjectsArgs args, CancellationToken cancellationToken = default)
+    {
+
+        return ListObject(args, cancellationToken);
+    }
+    public async Task<IObservable<Item>> ListObjectsAsync(ListObjectsArgs args, CancellationToken cancellationToken = default)
     {
         args?.Validate();
-        return System.Reactive.Linq.Observable.Create<Item>(
+        var res =  System.Reactive.Linq.Observable.Create<Item>(
             async (obs, ct) =>
             {
                 var isRunning = true;
@@ -244,6 +250,7 @@ public partial class MinioClient : IBucketOperations
                 }
             }
         );
+        return res; 
     }
 
     /// <summary>
@@ -792,8 +799,7 @@ public partial class MinioClient : IBucketOperations
                 .ConfigureAwait(false);
         var getObjectsListResponse = new GetObjectsListResponse(responseResult.StatusCode, responseResult.Content);
         return getObjectsListResponse.ObjectsTuple;
-    }
-
+    }   
     /// <summary>
     ///     Gets the list of objects along with version IDs in the bucket filtered by prefix
     /// </summary>

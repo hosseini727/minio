@@ -724,6 +724,11 @@ public partial class MinioClient : IMinioClient
             disposedValue = true;
         }
     }
+
+    IObservable<Item> IMinioClient.ListObjectsAsync(ListObjectsArgs args, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
 }
 
 internal delegate void ApiResponseErrorHandler(ResponseResult response);

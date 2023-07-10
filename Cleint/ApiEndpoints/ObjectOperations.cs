@@ -570,6 +570,10 @@ public partial class MinioClient : IObjectOperations
             args.ObjectStreamData is not null)
         {
             var bytes = await ReadFullAsync(args.ObjectStreamData, (int)args.ObjectSize).ConfigureAwait(false);
+
+
+          
+
             var bytesRead = bytes.Length;
             if (bytesRead != (int)args.ObjectSize)
                 throw new UnexpectedShortReadException(
@@ -1228,12 +1232,13 @@ public partial class MinioClient : IObjectOperations
     /// <param name="currentPartSize"></param>
     /// <returns>bytes read in a byte array</returns>
     internal async Task<ReadOnlyMemory<byte>> ReadFullAsync(Stream data, int currentPartSize)
-    {
-        Memory<byte> result = new byte[currentPartSize];
+    {       
+
+        Memory<byte> result = new byte[currentPartSize];        
         var totalRead = 0;
         while (totalRead < currentPartSize)
         {
-            Memory<byte> curData = new byte[currentPartSize - totalRead];
+            Memory<byte> curData = new byte[currentPartSize - totalRead]; 
             var curRead = await data.ReadAsync(curData.Slice(0, currentPartSize - totalRead)).ConfigureAwait(false);
             if (curRead == 0) break;
             for (var i = 0; i < curRead; i++)

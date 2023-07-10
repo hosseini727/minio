@@ -1,6 +1,7 @@
 ﻿using Cleint;
 using Cleint.DataModel;
 using Cleint.DataModel.ILM;
+using Cleint.DataModel.Tags;
 using Microsoft.AspNetCore.Mvc;
 using Services.Services;
 using System.Collections.ObjectModel;
@@ -65,13 +66,29 @@ namespace Alborz.MinIo.Controllers
         {
             try
             {
+
+                // add tag to put object
+                //IDictionary<string, string> dict = new Dictionary<string, string>();
+                //var collection = new Collection<Cleint.DataModel.Tags.Tag>();
+                //var qqq = new Tag();
+                //qqq.Key = "12";
+                //qqq.Value = "aaa";
+                //collection.Add(qqq);
+                //var tagging = new Tagging();
+                //var tagset = new TagSet();
+                //tagset.Tag = collection;
+                //tagging.TaggingSet = tagset;              
+
+
+
                 var objectName = "my.mp3";
                 var filePath = "D:\\down\\data\\my.mp3";
                 //var filePath = "my.mp3";
-                var contentType = "application/octet-stream";
+                //var contentType = "application/octet-stream";
+                var contentType = "image";
                 var endpoint = "127.0.0.1:9000";
-                var accessKey = "yYQGMZ2U31fhjq4myB3Z";
-                var secretKey = "KdSbjveptox9l9zn3ZVDZSBsXeOeDdfB8xijztNv";
+                var accessKey = "lnYeEijms41YL48gmXXt";
+                var secretKey = "XCXQAXM9YNmCGp03Pu879wu1aJ4rI2qIV4WGGkHX";
                 var secure = false;
                 var minio = new MinioClient()
                     .WithEndpoint(endpoint)
@@ -79,13 +96,20 @@ namespace Alborz.MinIo.Controllers
                     .WithSSL(secure)
                     .Build();
 
-                //var putObjectArgs = new PutObjectArgs()
-                //     .WithBucket(bucketName)
-                //     .WithObject(objectName)
-                //     .WithFileName(filePath)
-                //     .WithContentType(contentType);
-                //await minio.PutObjectAsync(putObjectArgs).ConfigureAwait(false);
+                // Remove Tags for the object
+                //var args = new RemoveObjectTagsArgs()
+                //               .WithBucket("test333")
+                //               .WithObject("my.mp3");
+                //await minio.RemoveObjectTagsAsync(args);
 
+                var putObjectArgs = new PutObjectArgs()
+                     .WithBucket(bucketName)
+                     .WithObject(objectName)
+                     .WithFileName(filePath)
+                     //.WithTagging(tagging)
+                     .WithContentType(contentType);
+                await minio.PutObjectAsync(putObjectArgs).ConfigureAwait(false);
+                // end tag to put object
 
 
                 //// Set Lifecycle configuration for the bucket
@@ -113,10 +137,64 @@ namespace Alborz.MinIo.Controllers
                 //var findGetBucket = await minio.GetBucketLifecycleAsync(args1);
                 //var status = findGetBucket.Rules[0].Status;
 
+
+                //for test
+                // add lifecycleConfiguration
+                //IDictionary<string, string> dict = new Dictionary<string, string>();
+                //var collection = new Collection<Cleint.DataModel.Tags.Tag>();
+                //var tag = new Tag();
+                //tag.Key = "10";
+                //tag.Value = "10";
+                //collection.Add(tag);
+                //var tagging = new Tagging();
+                //var tagset = new TagSet();
+                //tagset.Tag = collection;
+                //tagging.TaggingSet = tagset;
+
                 //var lifecycleConfiguration = new LifecycleConfiguration()
-                //{                    
+                //{
                 //    Rules = new Collection<LifecycleRule>()
-                //    {                        
+                //    {
+                //      new LifecycleRule()
+                //      {
+                //          Expiration = new Expiration()
+                //          {
+                //              Days = 1,
+                //              ExpiredObjectDeleteMarker = true
+                //          },
+                //          Status = "Enabled",
+                //          ID = "cikt4adovnbu8aoutkmk",
+                //           Filter = new RuleFilter()
+                //           {
+                //               Tag = new Tagging()
+                //               {
+                //                   TaggingSet = new TagSet()
+                //                   {
+                //                       Tag = new Collection<Tag>()
+                //                       {
+                //                           new Tag (){Key = "34" , Value = "esbb" }
+                //                       }
+                //                   },                                  
+                //               },
+                //           },
+                //      }
+                //    }
+                //};
+                ////Create Bucket Lifecycle Configuration for the bucket
+                //SetBucketLifecycleArgs args = new SetBucketLifecycleArgs()
+                //                .WithBucket("test333")
+                //                .WithLifecycleConfiguration(lifecycleConfiguration);
+                //await minio.SetBucketLifecycleAsync(args);
+                ////end lifecycleConfiguration
+
+
+
+
+                //add lifecycleConfiguration
+                //var lifecycleConfiguration = new LifecycleConfiguration()
+                //{
+                //    Rules = new Collection<LifecycleRule>()
+                //    {
                 //      new LifecycleRule()
                 //      {
                 //          Expiration = new Expiration()
@@ -129,7 +207,7 @@ namespace Alborz.MinIo.Controllers
                 //          ID = "cikt4adovnbu8aoutkmg",
                 //           Filter = new RuleFilter()
                 //           {
-                //               Prefix = "tmp"                             
+                //               Prefix = "tmp"
                 //           },
                 //          //TransitionObject = new Transition()
                 //          //{
@@ -140,13 +218,12 @@ namespace Alborz.MinIo.Controllers
                 //    }
                 //};
 
-
                 ////Create Bucket Lifecycle Configuration for the bucket
                 //SetBucketLifecycleArgs args = new SetBucketLifecycleArgs()
-                //                .WithBucket(bucketName)
+                //                .WithBucket("test")
                 //                .WithLifecycleConfiguration(lifecycleConfiguration);
                 //await minio.SetBucketLifecycleAsync(args);
-
+                //end lifecycleConfiguration
 
                 //// Remove Bucket Lifecycle Configuration for the bucket
                 //var args = new RemoveBucketLifecycleArgs()
@@ -155,18 +232,20 @@ namespace Alborz.MinIo.Controllers
                 //Console.WriteLine($"Set Lifecycle for bucket {bucketName}.");                
 
 
-                // List bucker              
-                //var test =   await minio.ListBucketsAsync().ConfigureAwait(false); ;
+                //List bucker
+                //var test = await minio.ListBucketsAsync().ConfigureAwait(false);
+
 
                 //list object                         
-               var args = new ListObjectsArgs()
-              .WithBucket("essi")
-              .WithPrefix(null)
-              .WithRecursive(true);
-                var observable = minio.ListObjectsAsync(args);
-                var subscription = observable.Subscribe(
-                item => item.Key.ToString());
-
+                // var args = new ListObjectsArgs()
+                //.WithBucket("test")
+                //.WithPrefix("*")
+                //.WithRecursive(true);
+                //IObservable<Item> observable = minio.ListObjectsAsync(args);
+                //var subscription = observable.Subscribe(
+                //item => item.Key.ToString());           
+                //var subscription = observable.Subscribe(
+                //item => item.Key.ToString());                
 
 
                 return Ok("ok");

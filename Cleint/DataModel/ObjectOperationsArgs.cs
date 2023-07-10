@@ -1804,7 +1804,7 @@ public class PutObjectArgs : ObjectWriteArgs<PutObjectArgs>
         RequestBody = null;
         ObjectStreamData = null;
         PartNumber = 0;
-        ContentType = "application/octet-stream";
+        //ContentType = "image";
     }
 
     internal PutObjectArgs(PutObjectPartArgs args)
