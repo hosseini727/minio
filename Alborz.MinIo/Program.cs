@@ -13,7 +13,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddControllers();
 
-builder.Services.AddScoped<IMinioServices, MinioServices>();
+builder.Services.AddScoped<IRabbitMqServices, RabbitMqServices>();
 
 builder.Services.AddScoped<MinioClient, MinioClient>();
 

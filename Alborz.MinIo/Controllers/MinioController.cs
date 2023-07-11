@@ -5,6 +5,8 @@ using Cleint.DataModel.Tags;
 using Microsoft.AspNetCore.Mvc;
 using Services.Services;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Text;
 using System.Threading;
 using System.Xml;
 
@@ -17,29 +19,26 @@ namespace Alborz.MinIo.Controllers
 
         private readonly ILogger<MinioController> _logger;
         private readonly MinioClient _MinioClient;
+        private readonly IRabbitMqServices _RabbitMqServices;
 
-        public MinioController(ILogger<MinioController> logger, MinioClient minioClient)
+        public MinioController(ILogger<MinioController> logger, MinioClient minioClient,
+            IRabbitMqServices rabbitMqServices)
         {
             _logger = logger;
             _MinioClient = minioClient;
+            _RabbitMqServices = rabbitMqServices;
         }
 
         [HttpGet("[action]")]
         public async Task<ActionResult> MakeBucket(string bucketName)
         {
             //_logger.LogError("for test");
-
             var location = "us-east-1";
             var endpoint = "127.0.0.1:9000";
             var accessKey = "yYQGMZ2U31fhjq4myB3Z";
             var secretKey = "KdSbjveptox9l9zn3ZVDZSBsXeOeDdfB8xijztNv";
             var secure = false;
-            //var minio = new MinioClient()
-            //    .WithEndpoint(endpoint)
-            //    .WithCredentials(accessKey, secretKey)
-            //    .WithSSL(secure)
-            //    .Build();
-            
+          
             _MinioClient
             .WithEndpoint(endpoint)
             .WithCredentials(accessKey, secretKey)
@@ -61,34 +60,157 @@ namespace Alborz.MinIo.Controllers
             return Ok("از قبل وجود دارد");
         }
 
+
+        //HttpRequestMessage data
+        //public async Task<HttpResponseMessage> PutObjectBucketReturnLink1()
+
+        [HttpGet("[action]")]
+        public async Task<ActionResult> PutObjectBucketReturnLink1()
+        {
+            // Retrieve the JSON data from the request body
+            //string jsonData = await data.Content.ReadAsStringAsync();
+            //var ss = data.Content.Headers;
+            // Process the JSON data as needed
+            //return new HttpResponseMessage
+            //{
+            //    Content = new StringContent(jsonData, Encoding.UTF8, "application/json")
+            //};
+            return Ok();
+        }
+
+
+            /// <summary>
+            /// Put Object bucket and return link for download object
+            /// </summary>
+            /// <param name="bucketName"></param>
+            /// <param name="objectName"></param>
+            /// <returns></returns>
+            [HttpGet("[action]")]
+        public async Task<ActionResult> PutObjectBucketReturnLink(string bucketName , string objectName)
+        {
+            try
+            {
+                #region Add tag 
+                IDictionary<string, string> dict = new Dictionary<string, string>();
+                var collection = new Collection<Cleint.DataModel.Tags.Tag>();
+                var tag = new Tag();
+                tag.Key = "1";
+                tag.Value = "tmp";
+                collection.Add(tag);
+                var tagging = new Tagging();
+                var tagset = new TagSet();
+                tagset.Tag = collection;
+                tagging.TaggingSet = tagset;
+                //var filePath = "D:\\down\\data\\my.png";
+                var filePath = "C:/111.png";
+                var contentType = "application/octet-stream";
+                var endpoint = "127.0.0.1:9000";
+                var accessKey = "UwgLr4DJU7eRMkggAtiC";
+                var secretKey = "z6olxOnKfqHeKOb4Llqrj6iuItdMreUbkxJTyYfg";
+                var secure = false;
+                var minio = new MinioClient()
+                    .WithEndpoint(endpoint)
+                    .WithCredentials(accessKey, secretKey)
+                    .WithSSL(secure)
+                    .Build();
+                #endregion
+
+                #region Put Object
+                var putObjectArgs = new PutObjectArgs()
+                     .WithBucket(bucketName)
+                     .WithObject(objectName)
+                     .WithFileName(filePath)
+                     .WithTagging(tagging)
+                     .WithContentType(contentType);
+                await minio.PutObjectAsync(putObjectArgs).ConfigureAwait(false);
+                #endregion
+
+                #region create link for download
+                PresignedGetObjectArgs presignedGetObjectArgs = new PresignedGetObjectArgs()
+                              .WithBucket(bucketName)
+                              .WithObject(objectName)
+                              .WithExpiry(60 * 60 * 24);
+                string url = await minio.PresignedGetObjectAsync(presignedGetObjectArgs).ConfigureAwait(false);
+                #endregion
+
+                return Ok(url);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Remove Tags for the object
+        /// </summary>
+        /// <param name="bucketName"></param>
+        /// <returns></returns>
+        [HttpGet("[action]")]
+        public async Task<ActionResult> RemoveTagObject(string bucketName)
+        {
+            IDictionary<string, string> dict = new Dictionary<string, string>();
+            var collection = new Collection<Cleint.DataModel.Tags.Tag>();
+            var tag = new Tag();
+            tag.Key = "1";
+            tag.Value = "tmp";
+            collection.Add(tag);
+            var tagging = new Tagging();
+            var tagset = new TagSet();
+            tagset.Tag = collection;
+            tagging.TaggingSet = tagset;
+            var objectName = "111.png";
+            //var filePath = "D:\\down\\data\\my.png";
+            var filePath = "C:/111.png";
+            var contentType = "application/octet-stream";
+            var endpoint = "127.0.0.1:9000";
+            var accessKey = "UwgLr4DJU7eRMkggAtiC";
+            var secretKey = "z6olxOnKfqHeKOb4Llqrj6iuItdMreUbkxJTyYfg";
+            var secure = false;
+            var minio = new MinioClient()
+                .WithEndpoint(endpoint)
+                .WithCredentials(accessKey, secretKey)
+                .WithSSL(secure)
+                .Build();
+
+            try
+            {
+                var args = new RemoveObjectTagsArgs()
+                               .WithBucket("test")
+                               .WithObject("111.png");
+                await minio.RemoveObjectTagsAsync(args);
+                return Ok(args);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         [HttpGet("[action]")]
         public async Task<ActionResult> PutObjectBucket(string bucketName)
         {
             try
             {
-
-                // add tag to put object
-                //IDictionary<string, string> dict = new Dictionary<string, string>();
-                //var collection = new Collection<Cleint.DataModel.Tags.Tag>();
-                //var qqq = new Tag();
-                //qqq.Key = "12";
-                //qqq.Value = "aaa";
-                //collection.Add(qqq);
-                //var tagging = new Tagging();
-                //var tagset = new TagSet();
-                //tagset.Tag = collection;
-                //tagging.TaggingSet = tagset;              
-
-
-
-                var objectName = "my.mp3";
-                var filePath = "D:\\down\\data\\my.mp3";
-                //var filePath = "my.mp3";
-                //var contentType = "application/octet-stream";
-                var contentType = "image";
+                ////add tag to put object
+                IDictionary<string, string> dict = new Dictionary<string, string>();
+                var collection = new Collection<Cleint.DataModel.Tags.Tag>();
+                var tag = new Tag();
+                tag.Key = "1";
+                tag.Value = "tmp";
+                collection.Add(tag);
+                var tagging = new Tagging();
+                var tagset = new TagSet();
+                tagset.Tag = collection;
+                tagging.TaggingSet = tagset;
+                var objectName = "111.png";
+                //var filePath = "D:\\down\\data\\my.png";
+                var filePath = "C:/111.png";
+                var contentType = "application/octet-stream";
                 var endpoint = "127.0.0.1:9000";
-                var accessKey = "lnYeEijms41YL48gmXXt";
-                var secretKey = "XCXQAXM9YNmCGp03Pu879wu1aJ4rI2qIV4WGGkHX";
+                var accessKey = "UwgLr4DJU7eRMkggAtiC";
+                var secretKey = "z6olxOnKfqHeKOb4Llqrj6iuItdMreUbkxJTyYfg";
                 var secure = false;
                 var minio = new MinioClient()
                     .WithEndpoint(endpoint)
@@ -98,8 +220,8 @@ namespace Alborz.MinIo.Controllers
 
                 // Remove Tags for the object
                 //var args = new RemoveObjectTagsArgs()
-                //               .WithBucket("test333")
-                //               .WithObject("my.mp3");
+                //               .WithBucket("test")
+                //               .WithObject("111.png");
                 //await minio.RemoveObjectTagsAsync(args);
 
                 var putObjectArgs = new PutObjectArgs()
@@ -110,6 +232,17 @@ namespace Alborz.MinIo.Controllers
                      .WithContentType(contentType);
                 await minio.PutObjectAsync(putObjectArgs).ConfigureAwait(false);
                 // end tag to put object
+
+
+                //create link 
+                //PresignedGetObjectArgs presignedGetObjectArgs = new PresignedGetObjectArgs()
+                //              .WithBucket(bucketName)
+                //              .WithObject(objectName)
+                //              .WithExpiry(60 * 60 * 24);
+                //string url = await minio.PresignedGetObjectAsync(presignedGetObjectArgs).ConfigureAwait(false);
+
+                return Ok("");
+
 
 
                 //// Set Lifecycle configuration for the bucket
@@ -248,13 +381,12 @@ namespace Alborz.MinIo.Controllers
                 //item => item.Key.ToString());                
 
 
-                return Ok("ok");
+                //return Ok("ok");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new ArgumentOutOfRangeException(
-                            "خطا", ex.Message);
+                throw ;
             }            
         }
 

@@ -197,7 +197,7 @@ internal class NewMultipartUploadResponse : GenericResponse
 }
 
 public class PutObjectResponse : GenericResponse
-{
+{    
     public PutObjectResponse(HttpStatusCode statusCode, string responseContent,
         IDictionary<string, string> responseHeaders, long size, string name)
         : base(statusCode, responseContent)
@@ -218,4 +218,6 @@ public class PutObjectResponse : GenericResponse
     public string Etag { get; set; }
     public string ObjectName { get; set; }
     public long Size { get; set; }
+    public bool CheckedFormatFile { get; set; }
+
 }

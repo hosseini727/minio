@@ -25,6 +25,8 @@ using Cleint.DataModel.ObjectLock;
 using Cleint.DataModel.Tags;
 using Cleint.Exceptions;
 using Cleint.Helper;
+using FileSignatures;
+using System.Linq;
 
 namespace Cleint;
 
@@ -615,11 +617,62 @@ public partial class MinioClient : IObjectOperations
         if (!string.IsNullOrEmpty(args.FileName))
         {
             using var fileStream = new FileStream(args.FileName, FileMode.Open, FileAccess.Read);
-            putObjectPartArgs = putObjectPartArgs
-                .WithStreamData(fileStream)
-                .WithObjectSize(fileStream.Length)
-                .WithRequestBody(null);
-            etags = await PutObjectPartAsync(putObjectPartArgs, cancellationToken).ConfigureAwait(false);
+
+            //checked file format (type file )
+            var inspector = new FileFormatInspector();
+            var format = inspector.DetermineFileFormat(fileStream);
+            var  knownTypes = new string[] {
+        //"text/plain",
+        //"text/html",
+        //"text/xml",
+        //"text/richtext",
+        //"text/scriptlet",
+        //"audio/x-aiff",
+        //"audio/basic",
+        //"audio/mid",
+        //"audio/wav",
+        "audio/mp3",
+        "image/gif",
+        "image/jpeg",
+        "image/pjpeg",
+        "image/png",
+        "image/x-png",
+        "image/tiff",
+        "image/bmp",
+        "image/x-xbitmap",
+        "image/x-jg",
+        //"image/x-emf",
+        //"image/x-wmf",
+        //"video/avi",
+        //"video/mpeg",
+        //"application/octet-stream",
+        //"application/postscript",
+        //"application/base64",
+        //"application/macbinhex40",
+        "application/pdf",
+        //"application/xml",
+        //"application/atom+xml",
+        //"application/rss+xml",
+        //"application/x-compressed",
+        //"application/x-zip-compressed",
+        //"application/x-gzip-compressed",
+        //"application/java",
+        //"application/x-msdownload"
+    }.ToList();
+
+         var checkedFormat = knownTypes.Where(x => x.Contains(format.Extension)).FirstOrDefault();
+            if (checkedFormat != null)
+            {
+                putObjectPartArgs = putObjectPartArgs
+              .WithStreamData(fileStream)
+              .WithObjectSize(fileStream.Length)
+              .WithRequestBody(null);
+                etags = await PutObjectPartAsync(putObjectPartArgs, cancellationToken).ConfigureAwait(false);
+            }
+            else
+            {
+                throw new InvalidOperationException("فایل معتبر نیست");
+            }
         }
         // Upload stream contents
         else

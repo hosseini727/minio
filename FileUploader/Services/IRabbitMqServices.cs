@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Services.Services
 {
-    public interface  IMinioServices
+    public interface  IRabbitMqServices
     {
-        Task CreateBucket(IMinioClient minio, string bucketName = "my-bucket-name", string loc = "us-east-1");
+        Task GetRabbitMessage();
     }
 }
