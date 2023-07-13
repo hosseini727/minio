@@ -13,7 +13,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddControllers();
 
-builder.Services.AddScoped<IRabbitMqServices, RabbitMqServices>();
+builder.Services.AddSingleton<IRabbitMqServices, RabbitMqServices>();
 
 builder.Services.AddScoped<MinioClient, MinioClient>();
 
@@ -23,18 +23,19 @@ builder.Host.UseSerilog((ctx, lc) => lc
     .WriteTo.File(new JsonFormatter(),
         "important-logs.json",
         restrictedToMinimumLevel: LogEventLevel.Error)
-
     // Add a log file that will be replaced by a new log file each day
     .WriteTo.File("all-daily-.logs",
         rollingInterval: RollingInterval.Day, restrictedToMinimumLevel: LogEventLevel.Error)
-
     // Set default minimum log level
     .MinimumLevel.Error());
 
+
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.Services.GetService<RabbitMqServices>(); 
 
+// Configure the HTTP request pipeline.
 app.UseSwagger();
 app.UseSwaggerUI();
 

@@ -15,7 +15,7 @@ namespace Moon
 {
     public static class Program
     {
-        public const string QueueName = "inbox";
+        public const string QueueName = "q1";
         //section two
         private static void Main()
         {
@@ -77,21 +77,8 @@ namespace Moon
                                 body: responseBytes);
                             channel.BasicAck(deliveryTag: eventArgs.DeliveryTag, multiple: false);
 
-                            channel.QueueDeclare(queue: "inbox", durable: true, exclusive: false, autoDelete: false, arguments: null);
-
-                            HttpClient client = new HttpClient();
-                            //client.BaseAddress = new Uri("http://localhost:5116");
-                            string jsonData = "{\"name\":\"John\",\"age\":30}";
-                            StringContent request = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
-                            HttpResponseMessage res = await client.PostAsync("http://localhost:5116/api/Minio/PutObjectBucketReturnLink1/", request);
-                            if (res.IsSuccessStatusCode)
-                            {
-
-                            }
-                            else
-                            {
-                            }
+                            channel.QueueDeclare(queue: "q1", durable: true, exclusive: false, autoDelete: false, arguments: null);
+                      
                             System.Console.WriteLine($"{message},compelete,{i = i + 1}");                            
                         }
                     };

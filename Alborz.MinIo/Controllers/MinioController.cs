@@ -15,7 +15,7 @@ namespace Alborz.MinIo.Controllers
     [ApiController]
     [Route("api/[controller]")]
     public class MinioController : ControllerBase
-    {        
+    {
 
         private readonly ILogger<MinioController> _logger;
         private readonly MinioClient _MinioClient;
@@ -29,16 +29,58 @@ namespace Alborz.MinIo.Controllers
             _RabbitMqServices = rabbitMqServices;
         }
 
+
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Rabbit()
+        {
+            try
+            {
+               var res =  _RabbitMqServices.GetRabbitMessage();               
+               return Ok("");                
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                return StatusCode(500, "An error occurred");
+            }
+        }
+
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> ReceiveData()
+        {
+            try
+            {
+                using (StreamReader reader = new StreamReader(Request.Body))
+                {
+                    string requestBody = await reader.ReadToEndAsync();
+
+                    // Process the received data in requestBody
+
+                    var response = new { Message = "Data received successfully" };
+                    return Ok(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                return StatusCode(500, "An error occurred");
+            }
+        }
+
         [HttpGet("[action]")]
         public async Task<ActionResult> MakeBucket(string bucketName)
         {
             //_logger.LogError("for test");
             var location = "us-east-1";
             var endpoint = "127.0.0.1:9000";
-            var accessKey = "yYQGMZ2U31fhjq4myB3Z";
-            var secretKey = "KdSbjveptox9l9zn3ZVDZSBsXeOeDdfB8xijztNv";
+            var accessKey = "lnYeEijms41YL48gmXXt";
+            var secretKey = "XCXQAXM9YNmCGp03Pu879wu1aJ4rI2qIV4WGGkHX";
             var secure = false;
-          
+
             _MinioClient
             .WithEndpoint(endpoint)
             .WithCredentials(accessKey, secretKey)
@@ -53,7 +95,7 @@ namespace Alborz.MinIo.Controllers
                     .WithBucket(bucketName);
             var found = await _MinioClient.BucketExistsAsync(bktExistArgs).ConfigureAwait(false);
             if (!found)
-            {                   
+            {
                 await _MinioClient.MakeBucketAsync(mkBktArgs).ConfigureAwait(false);
                 return Ok("باکت جدید ایجاد شد");
             }
@@ -79,14 +121,14 @@ namespace Alborz.MinIo.Controllers
         }
 
 
-            /// <summary>
-            /// Put Object bucket and return link for download object
-            /// </summary>
-            /// <param name="bucketName"></param>
-            /// <param name="objectName"></param>
-            /// <returns></returns>
-            [HttpGet("[action]")]
-        public async Task<ActionResult> PutObjectBucketReturnLink(string bucketName , string objectName)
+        /// <summary>
+        /// Put Object bucket and return link for download object
+        /// </summary>
+        /// <param name="bucketName"></param>
+        /// <param name="objectName"></param>
+        /// <returns></returns>
+        [HttpGet("[action]")]
+        public async Task<ActionResult> PutObjectBucketReturnLink(string bucketName, string objectName)
         {
             try
             {
@@ -105,8 +147,8 @@ namespace Alborz.MinIo.Controllers
                 var filePath = "C:/111.png";
                 var contentType = "application/octet-stream";
                 var endpoint = "127.0.0.1:9000";
-                var accessKey = "UwgLr4DJU7eRMkggAtiC";
-                var secretKey = "z6olxOnKfqHeKOb4Llqrj6iuItdMreUbkxJTyYfg";
+                var accessKey = "lnYeEijms41YL48gmXXt";
+                var secretKey = "XCXQAXM9YNmCGp03Pu879wu1aJ4rI2qIV4WGGkHX";
                 var secure = false;
                 var minio = new MinioClient()
                     .WithEndpoint(endpoint)
@@ -165,8 +207,8 @@ namespace Alborz.MinIo.Controllers
             var filePath = "C:/111.png";
             var contentType = "application/octet-stream";
             var endpoint = "127.0.0.1:9000";
-            var accessKey = "UwgLr4DJU7eRMkggAtiC";
-            var secretKey = "z6olxOnKfqHeKOb4Llqrj6iuItdMreUbkxJTyYfg";
+            var accessKey = "lnYeEijms41YL48gmXXt";
+            var secretKey = "XCXQAXM9YNmCGp03Pu879wu1aJ4rI2qIV4WGGkHX";
             var secure = false;
             var minio = new MinioClient()
                 .WithEndpoint(endpoint)
@@ -204,13 +246,13 @@ namespace Alborz.MinIo.Controllers
                 var tagset = new TagSet();
                 tagset.Tag = collection;
                 tagging.TaggingSet = tagset;
-                var objectName = "111.png";
-                //var filePath = "D:\\down\\data\\my.png";
-                var filePath = "C:/111.png";
+                var objectName = "my.mp3";
+                var filePath = "D:\\down\\data\\my.mp3";
+                //var filePath = "C:/111.png";
                 var contentType = "application/octet-stream";
                 var endpoint = "127.0.0.1:9000";
-                var accessKey = "UwgLr4DJU7eRMkggAtiC";
-                var secretKey = "z6olxOnKfqHeKOb4Llqrj6iuItdMreUbkxJTyYfg";
+                var accessKey = "lnYeEijms41YL48gmXXt";
+                var secretKey = "XCXQAXM9YNmCGp03Pu879wu1aJ4rI2qIV4WGGkHX";
                 var secure = false;
                 var minio = new MinioClient()
                     .WithEndpoint(endpoint)
@@ -386,8 +428,8 @@ namespace Alborz.MinIo.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw ;
-            }            
+                throw;
+            }
         }
 
         [HttpGet("[action]")]
@@ -421,7 +463,7 @@ namespace Alborz.MinIo.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<ActionResult> RemoveObject(string bucketName,string objectName)
+        public async Task<ActionResult> RemoveObject(string bucketName, string objectName)
         {
             try
             {
@@ -434,7 +476,7 @@ namespace Alborz.MinIo.Controllers
                     .WithCredentials(accessKey, secretKey)
                     .WithSSL(secure)
                     .Build();
-                
+
                 var removeObjectArgs = new RemoveObjectArgs()
                 .WithBucket(bucketName)
                 .WithObject(objectName);
@@ -463,7 +505,7 @@ namespace Alborz.MinIo.Controllers
                     .WithEndpoint(endpoint)
                     .WithCredentials(accessKey, secretKey)
                     .WithSSL(secure)
-                    .Build();         
+                    .Build();
 
                 PresignedGetObjectArgs presignedGetObjectArgs = new PresignedGetObjectArgs()
                                        .WithBucket(bucketName)
@@ -493,8 +535,8 @@ namespace Alborz.MinIo.Controllers
                     .WithCredentials(accessKey, secretKey)
                     .WithSSL(secure)
                     .Build();
-           
-                 await minio.ListBucketsAsync().ConfigureAwait(false);
+
+                await minio.ListBucketsAsync().ConfigureAwait(false);
 
                 return Ok("عملیات با موفقیت انجام شد");
             }
@@ -529,6 +571,6 @@ namespace Alborz.MinIo.Controllers
             }
         }
 
-      
+
     }
 }
