@@ -19,33 +19,31 @@ namespace Alborz.MinIo.Controllers
 
         private readonly ILogger<MinioController> _logger;
         private readonly MinioClient _MinioClient;
-        private readonly IRabbitMqServices _RabbitMqServices;
+        //private readonly IRabbitMqServices _RabbitMqServices;
 
-        public MinioController(ILogger<MinioController> logger, MinioClient minioClient,
-            IRabbitMqServices rabbitMqServices)
+        public MinioController(ILogger<MinioController> logger, MinioClient minioClient)
         {
             _logger = logger;
             _MinioClient = minioClient;
-            _RabbitMqServices = rabbitMqServices;
         }
 
 
 
-        [HttpPost("[action]")]
-        public async Task<IActionResult> Rabbit()
-        {
-            try
-            {
-               var res =  _RabbitMqServices.GetRabbitMessage();               
-               return Ok("");                
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions
-                Console.WriteLine($"An error occurred: {ex.Message}");
-                return StatusCode(500, "An error occurred");
-            }
-        }
+        //[HttpPost("[action]")]
+        //public async Task<IActionResult> Rabbit()
+        //{
+        //    try
+        //    {
+        //       var res =  _RabbitMqServices.();               
+        //       return Ok("");                
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Handle exceptions
+        //        Console.WriteLine($"An error occurred: {ex.Message}");
+        //        return StatusCode(500, "An error occurred");
+        //    }
+        //}
 
 
         [HttpPost("[action]")]
@@ -251,8 +249,8 @@ namespace Alborz.MinIo.Controllers
                 //var filePath = "C:/111.png";
                 var contentType = "application/octet-stream";
                 var endpoint = "127.0.0.1:9000";
-                var accessKey = "lnYeEijms41YL48gmXXt";
-                var secretKey = "XCXQAXM9YNmCGp03Pu879wu1aJ4rI2qIV4WGGkHX";
+                var accessKey = "qAtXulcIXgg8YX8GMhZ4";
+                var secretKey = "2Fwi35Znyelpe6vZtarRXqktXZPvPoKEvRFJ8Xtl";
                 var secure = false;
                 var minio = new MinioClient()
                     .WithEndpoint(endpoint)

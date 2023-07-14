@@ -9,8 +9,7 @@ namespace Services.Services
 {
     public interface  IRabbitMqServices
     {
-
-        //Task<string> GetRabbitMessage();
-        string GetRabbitMessage();
+        Task Consume();
+       //Task<string> GetRabbitMessage();
     }
 }

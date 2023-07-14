@@ -13,10 +13,16 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddControllers();
 
-builder.Services.AddSingleton<IRabbitMqServices, RabbitMqServices>();
+builder.Services.AddSingleton<RabbitMqServices, RabbitMqServices>();
+builder.Services.AddSingleton<RabbitMqServices>(provider =>
+{
+    var configuration = provider.GetRequiredService<IConfiguration>();
+    var hostName = configuration["RabbitMQ:127.0.0.1"];
+    var queueName = configuration["RabbitMQ:ef"];
+    return new RabbitMqServices(hostName, queueName);
+});
 
 builder.Services.AddScoped<MinioClient, MinioClient>();
-
 
 builder.Host.UseSerilog((ctx, lc) => lc
     //.WriteTo.Console()
@@ -32,15 +38,16 @@ builder.Host.UseSerilog((ctx, lc) => lc
 
 
 var app = builder.Build();
-
-app.Services.GetService<RabbitMqServices>(); 
+//WebApplication? app = builder.Build();
+var test = app.Services.GetService<RabbitMqServices>();
+test.ConsumeMessages();
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();
 app.UseSwaggerUI();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
+public partial class Program { }
+
+
