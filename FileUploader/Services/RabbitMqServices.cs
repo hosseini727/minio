@@ -12,18 +12,18 @@ using RabbitMQ.Client.Events;
 
 namespace Services.Services
 {
-    public class RabbitMqServices : IDisposable //: IRabbitMqServices
+    public class RabbitMqServices //: IDisposable //: IRabbitMqServices
     {
         private readonly IConnection _connection;
         private readonly IModel _channel;
         public const string queueName = "ef";
 
-        public RabbitMqServices(string hostName, string queueName)
+        public RabbitMqServices()
         {
-            var factory = new ConnectionFactory() { HostName = hostName };
+            var factory = new ConnectionFactory() { HostName = "127.0.0.1" };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
-            _channel.QueueDeclare(queue: queueName,
+            _channel.QueueDeclare(queue: "ef",
                                   durable: true,
                                   exclusive: false,
                                   autoDelete: false,
@@ -201,10 +201,10 @@ namespace Services.Services
             }
         }
 
-        public void Dispose()
-        {
-            _channel.Dispose();
-            _channel.Dispose();
-        }
+        //public void Dispose()
+        //{
+        //    _channel.Dispose();
+        //    _channel.Dispose();
+        //}
     }
 }

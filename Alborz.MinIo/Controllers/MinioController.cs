@@ -20,11 +20,13 @@ namespace Alborz.MinIo.Controllers
         private readonly ILogger<MinioController> _logger;
         private readonly MinioClient _MinioClient;
         //private readonly IRabbitMqServices _RabbitMqServices;
+        public readonly string AccessKey = "Q1UIngYLuWLe6tvszHw5";
+        private readonly string SecretKey = "dZv2AN9bLCNdTYiVDqZGNNj5O3Jf8uRIOvUYZcM7";
 
         public MinioController(ILogger<MinioController> logger, MinioClient minioClient)
         {
             _logger = logger;
-            _MinioClient = minioClient;
+            _MinioClient = minioClient;            
         }
 
 
@@ -75,8 +77,8 @@ namespace Alborz.MinIo.Controllers
             //_logger.LogError("for test");
             var location = "us-east-1";
             var endpoint = "127.0.0.1:9000";
-            var accessKey = "lnYeEijms41YL48gmXXt";
-            var secretKey = "XCXQAXM9YNmCGp03Pu879wu1aJ4rI2qIV4WGGkHX";
+            var accessKey = AccessKey;
+            var secretKey = SecretKey;
             var secure = false;
 
             _MinioClient
@@ -145,8 +147,8 @@ namespace Alborz.MinIo.Controllers
                 var filePath = "C:/111.png";
                 var contentType = "application/octet-stream";
                 var endpoint = "127.0.0.1:9000";
-                var accessKey = "lnYeEijms41YL48gmXXt";
-                var secretKey = "XCXQAXM9YNmCGp03Pu879wu1aJ4rI2qIV4WGGkHX";
+                var accessKey = AccessKey;
+                var secretKey = SecretKey;
                 var secure = false;
                 var minio = new MinioClient()
                     .WithEndpoint(endpoint)
@@ -205,8 +207,8 @@ namespace Alborz.MinIo.Controllers
             var filePath = "C:/111.png";
             var contentType = "application/octet-stream";
             var endpoint = "127.0.0.1:9000";
-            var accessKey = "lnYeEijms41YL48gmXXt";
-            var secretKey = "XCXQAXM9YNmCGp03Pu879wu1aJ4rI2qIV4WGGkHX";
+            var accessKey = AccessKey;
+            var secretKey = SecretKey;
             var secure = false;
             var minio = new MinioClient()
                 .WithEndpoint(endpoint)
@@ -249,8 +251,8 @@ namespace Alborz.MinIo.Controllers
                 //var filePath = "C:/111.png";
                 var contentType = "application/octet-stream";
                 var endpoint = "127.0.0.1:9000";
-                var accessKey = "qAtXulcIXgg8YX8GMhZ4";
-                var secretKey = "2Fwi35Znyelpe6vZtarRXqktXZPvPoKEvRFJ8Xtl";
+                var accessKey = AccessKey;
+                var secretKey = SecretKey;
                 var secure = false;
                 var minio = new MinioClient()
                     .WithEndpoint(endpoint)
@@ -439,8 +441,8 @@ namespace Alborz.MinIo.Controllers
                 var filePath = "D:\\down\\data\\my.mp3";
                 var contentType = "application/octet-stream";
                 var endpoint = "127.0.0.1:9000";
-                var accessKey = "yYQGMZ2U31fhjq4myB3Z";
-                var secretKey = "KdSbjveptox9l9zn3ZVDZSBsXeOeDdfB8xijztNv";
+                var accessKey = AccessKey;
+                var secretKey = SecretKey;
                 var secure = false;
                 var minio = new MinioClient()
                     .WithEndpoint(endpoint)
@@ -466,8 +468,8 @@ namespace Alborz.MinIo.Controllers
             try
             {
                 var endpoint = "127.0.0.1:9000";
-                var accessKey = "yYQGMZ2U31fhjq4myB3Z";
-                var secretKey = "KdSbjveptox9l9zn3ZVDZSBsXeOeDdfB8xijztNv";
+                var accessKey = AccessKey;
+                var secretKey = SecretKey;
                 var secure = false;
                 var minio = new MinioClient()
                     .WithEndpoint(endpoint)
@@ -496,8 +498,8 @@ namespace Alborz.MinIo.Controllers
             try
             {
                 var endpoint = "127.0.0.1:9000";
-                var accessKey = "yYQGMZ2U31fhjq4myB3Z";
-                var secretKey = "KdSbjveptox9l9zn3ZVDZSBsXeOeDdfB8xijztNv";
+                var accessKey = AccessKey;
+                var secretKey = SecretKey;
                 var secure = false;
                 var minio = new MinioClient()
                     .WithEndpoint(endpoint)
@@ -525,8 +527,8 @@ namespace Alborz.MinIo.Controllers
             try
             {
                 var endpoint = "127.0.0.1:9000";
-                var accessKey = "yYQGMZ2U31fhjq4myB3Z";
-                var secretKey = "KdSbjveptox9l9zn3ZVDZSBsXeOeDdfB8xijztNv";
+                var accessKey = AccessKey;
+                var secretKey = SecretKey;
                 var secure = false;
                 var minio = new MinioClient()
                     .WithEndpoint(endpoint)
@@ -550,8 +552,8 @@ namespace Alborz.MinIo.Controllers
             try
             {
                 var endpoint = "127.0.0.1:9000";
-                var accessKey = "yYQGMZ2U31fhjq4myB3Z";
-                var secretKey = "KdSbjveptox9l9zn3ZVDZSBsXeOeDdfB8xijztNv";
+                var accessKey =AccessKey;
+                var secretKey = SecretKey;
                 var secure = false;
                 var minio = new MinioClient()
                     .WithEndpoint(endpoint)
