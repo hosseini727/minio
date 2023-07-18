@@ -38,8 +38,6 @@ builder.Host.UseSerilog((ctx, lc) => lc
     // Set default minimum log level
     .MinimumLevel.Error());
 
-
-
 //var app = builder.Build();
 WebApplication? app = builder.Build();
 var test = app.Services.GetService<RabbitMqServices>();

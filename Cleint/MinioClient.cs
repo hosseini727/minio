@@ -324,7 +324,7 @@ public partial class MinioClient : IMinioClient
         // or Virtual Host styled endpoint (bucketname.s3.region.amazonaws.com) for Amazon requests.
         var resource = string.Empty;
         var usePathStyle = false;
-
+        BaseUrl = "127.0.0.1:9000"; 
         if (!string.IsNullOrEmpty(bucketName) && S3utils.IsAmazonEndPoint(BaseUrl))
         {
             if (method == HttpMethod.Put && objectName is null && resourcePath is null)
