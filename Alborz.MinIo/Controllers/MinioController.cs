@@ -20,11 +20,8 @@ namespace Alborz.MinIo.Controllers
         private readonly ILogger<MinioController> _logger;
         private readonly MinioClient _MinioClient;
         //private readonly IRabbitMqServices _RabbitMqServices;
-        //public readonly string AccessKey = "Q1UIngYLuWLe6tvszHw5";
-        //private readonly string SecretKey = "dZv2AN9bLCNdTYiVDqZGNNj5O3Jf8uRIOvUYZcM7";
-
-        public readonly string AccessKey = "EYDDQIQwwgSKCQVZqD8V";
-        private readonly string SecretKey = "rfI3CkD49bFlfduzLlrujULg2eAFtfwUg2Kr5P1i";
+        public readonly string AccessKey = "Q1UIngYLuWLe6tvszHw5";
+        private readonly string SecretKey = "dZv2AN9bLCNdTYiVDqZGNNj5O3Jf8uRIOvUYZcM7";
 
         public MinioController(ILogger<MinioController> logger, MinioClient minioClient)
         {
@@ -51,28 +48,28 @@ namespace Alborz.MinIo.Controllers
         //}
 
 
-        //[HttpPost("[action]")]
-        //public async Task<IActionResult> ReceiveData()
-        //{
-        //    try
-        //    {
-        //        using (StreamReader reader = new StreamReader(Request.Body))
-        //        {
-        //            string requestBody = await reader.ReadToEndAsync();
+        [HttpPost("[action]")]
+        public async Task<IActionResult> ReceiveData()
+        {
+            try
+            {
+                using (StreamReader reader = new StreamReader(Request.Body))
+                {
+                    string requestBody = await reader.ReadToEndAsync();
 
-        //            // Process the received data in requestBody
+                    // Process the received data in requestBody
 
-        //            var response = new { Message = "Data received successfully" };
-        //            return Ok(response);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Handle exceptions
-        //        Console.WriteLine($"An error occurred: {ex.Message}");
-        //        return StatusCode(500, "An error occurred");
-        //    }
-        //}
+                    var response = new { Message = "Data received successfully" };
+                    return Ok(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                return StatusCode(500, "An error occurred");
+            }
+        }
 
         [HttpGet("[action]")]
         public async Task<ActionResult> MakeBucket(string bucketName)
@@ -109,19 +106,19 @@ namespace Alborz.MinIo.Controllers
         //HttpRequestMessage data
         //public async Task<HttpResponseMessage> PutObjectBucketReturnLink1()
 
-        //[HttpGet("[action]")]
-        //public async Task<ActionResult> PutObjectBucketReturnLink1()
-        //{
-        //    // Retrieve the JSON data from the request body
-        //    //string jsonData = await data.Content.ReadAsStringAsync();
-        //    //var ss = data.Content.Headers;
-        //    // Process the JSON data as needed
-        //    //return new HttpResponseMessage
-        //    //{
-        //    //    Content = new StringContent(jsonData, Encoding.UTF8, "application/json")
-        //    //};
-        //    return Ok();
-        //}
+        [HttpGet("[action]")]
+        public async Task<ActionResult> PutObjectBucketReturnLink1()
+        {
+            // Retrieve the JSON data from the request body
+            //string jsonData = await data.Content.ReadAsStringAsync();
+            //var ss = data.Content.Headers;
+            // Process the JSON data as needed
+            //return new HttpResponseMessage
+            //{
+            //    Content = new StringContent(jsonData, Encoding.UTF8, "application/json")
+            //};
+            return Ok();
+        }
 
 
         /// <summary>
@@ -147,7 +144,7 @@ namespace Alborz.MinIo.Controllers
                 tagset.Tag = collection;
                 tagging.TaggingSet = tagset;
                 //var filePath = "D:\\down\\data\\my.png";
-                var filePath = "C:/112.png";
+                var filePath = "C:/111.png";
                 var contentType = "application/octet-stream";
                 var endpoint = "127.0.0.1:9000";
                 var accessKey = "lnYeEijms41YL48gmXXt";
@@ -430,7 +427,7 @@ namespace Alborz.MinIo.Controllers
             }
             catch (Exception ex)
             {
-                
+                _logger.LogError(ex.Message);
                 throw;
             }
         }
@@ -496,11 +493,15 @@ namespace Alborz.MinIo.Controllers
 
 
         [HttpGet("[action]")]
-        public async Task<ActionResult> CreateLinkForDownload(string bucketName, string objectName)
+        public async Task<ActionResult> CreateLink(string bucketName, string objectName)
         {
             try
             {
+<<<<<<< HEAD
                 //var endpoint = "127.0.0.1:9000";
+=======
+                var endpoint = "127.0.0.1:9000";
+>>>>>>> parent of b08cdd3 (sdad)
                 var accessKey = AccessKey;
                 var secretKey = SecretKey;
                 var endpoint = "127.0.0.1:9000";
@@ -511,8 +512,6 @@ namespace Alborz.MinIo.Controllers
                     .WithSSL(secure)
                     .Build();
 
-
-
                 PresignedGetObjectArgs presignedGetObjectArgs = new PresignedGetObjectArgs()
                                        .WithBucket(bucketName)
                                        .WithObject(objectName)
@@ -521,9 +520,9 @@ namespace Alborz.MinIo.Controllers
 
                 return Ok(url);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw new Exception(ex.Message);
+                throw;
             }
         }
 
@@ -578,80 +577,5 @@ namespace Alborz.MinIo.Controllers
         }
 
 
-        [HttpGet("[action]")]
-        public async Task<ActionResult> ListObject(string bucketName)
-        {
-            try
-            {
-                var endpoint = "127.0.0.1:9000";
-                var accessKey = AccessKey;
-                var secretKey = SecretKey;
-                //var prefix = "optional-prefix";
-                bool recursive = true;
-                var secure = false;
-                var minio = new MinioClient()
-                    .WithEndpoint(endpoint)
-                    .WithCredentials(accessKey, secretKey)
-                    .WithSSL(secure)
-                    .Build();
-
-                //list object                         
-                var args = new ListObjectsArgs()
-               .WithBucket("test")
-               .WithBucket(bucketName)
-               .WithPrefix("optional-prefix")
-               .WithRecursive(true);
-
-
-                #region create link for download
-                PresignedGetObjectArgs presignedGetObjectArgs = new PresignedGetObjectArgs()
-                              .WithBucket("test")
-                              .WithObject("my9.mp3")
-                              .WithExpiry(60 * 60 * 24);
-                string url = await minio.PresignedGetObjectAsync(presignedGetObjectArgs).ConfigureAwait(false);
-                #endregion
-
-
-
-                ////checked object
-                //var args2 = new GetObjectArgs()
-                //    .WithBucket("test")
-                //    .WithObject("my.mp3");
-
-                //var test = await minio.ListBucketsAsync().ConfigureAwait(false);
-
-                //StatObjectArgs statObjectArgs = new StatObjectArgs()
-                //                       .WithBucket("test")                                       
-                //                       .WithObject("my.mp3");
-                //await _MinioClient.StatObjectAsync(statObjectArgs);
-
-
-                //// Get input stream to have content of 'my-objectname' from 'my-bucketname'
-                //GetObjectArgs getObjectArgs = new GetObjectArgs()
-                //                                  .WithBucket("essi")
-                //                                  .WithObject("my.mp3");
-
-                //await _MinioClient.GetObjectAsync(getObjectArgs);
-
-
-                //var bktExistArgs = new BucketExistsArgs().WithBucket(bucketName);
-                //var found = await _MinioClient.BucketExistsAsync(bktExistArgs).ConfigureAwait(false);
-                //var checkedObject = _MinioClient.GetObjectAsync(args2).ConfigureAwait(false);
-
-                //if (!found)
-                //{
-                //    var ggg = await minio.ListObjectsAsync(args);
-
-                //    return Ok("عملیات با موفقیت انجام شد");
-                //}
-                //var ff = await  minio.ListObjectsAsync(args);
-
-                return Ok(url);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
     }
 }

@@ -9,13 +9,10 @@ using System.Collections.ObjectModel;
 using Cleint.DataModel.Tags;
 using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client.Events;
-using Newtonsoft.Json;
-using Microsoft.Extensions.Logging;
-using System.Net.Mail;
-using System.Net;
 
 namespace Services.Services
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 
@@ -24,16 +21,17 @@ namespace Services.Services
         public string BucketName { get; set; }
         public string ObjectName { get; set; }
     }
+=======
+>>>>>>> parent of b08cdd3 (sdad)
     public class RabbitMqServices //: IDisposable //: IRabbitMqServices
 =======
     public class RabbitMqServices : IDisposable //: IRabbitMqServices
 >>>>>>> parent of bd34366 (add service rabbit)
     {
-        private readonly ILogger<RabbitMqServices> _logger;
-
         private readonly IConnection _connection;
         private readonly IModel _channel;
         public const string queueName = "ef";
+<<<<<<< HEAD
 <<<<<<< HEAD
         
         public RabbitMqServices()
@@ -53,6 +51,12 @@ namespace Services.Services
         {
             var factory = new ConnectionFactory() { HostName = hostName };
 >>>>>>> parent of bd34366 (add service rabbit)
+=======
+
+        public RabbitMqServices()
+        {
+            var factory = new ConnectionFactory() { HostName = "127.0.0.1" };
+>>>>>>> parent of b08cdd3 (sdad)
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
             _channel.QueueDeclare(queue: queueName,
@@ -70,18 +74,22 @@ namespace Services.Services
         //    _MinioClient = minioClient;
         //}
 
-
-       
         public void ConsumeMessages()
         {
             var consumer = new EventingBasicConsumer(_channel);
+            //consumer.Received += (model, ea) =>
+            //{
+            //    var body = ea.Body.ToArray();
+            //    var message = Encoding.UTF8.GetString(body);
+            //    Console.WriteLine("Received message: {0}", message);
+            //};
+
             consumer.Received += async (model, eventArgs) =>
                         {
                             var properties = eventArgs.BasicProperties;
                             var replyProperties =
                                 _channel.CreateBasicProperties();
 
-                            Exception dontDoThis;
                             replyProperties.CorrelationId = properties.CorrelationId;
                             string response = "";
                             string message = "";
@@ -89,11 +97,15 @@ namespace Services.Services
                             try
                             {
                                 message = System.Text.Encoding.UTF8.GetString(body);
-                                //response = message;
-
-                                bool removeTagObject = RemoveTagObject(message);
-
-                                var responseBytes = System.Text.Encoding.UTF8.GetBytes(message);
+                                response = message;
+                            }
+                            catch (System.Exception ex)
+                            {
+                                response = 0.ToString();
+                            }
+                            finally
+                            {
+                                var responseBytes = System.Text.Encoding.UTF8.GetBytes(response);
                                 _channel.BasicPublish
                                     (exchange: string.Empty,
                                      routingKey: _channel.QueueDeclare(queue: string.Empty).QueueName,
@@ -103,16 +115,9 @@ namespace Services.Services
                                 _channel.BasicAck(deliveryTag: eventArgs.DeliveryTag, multiple: false);
 
                                 _channel.QueueDeclare(queue: "ef", durable: true, exclusive: false, autoDelete: false, arguments: null);
-                               
-                            }
-                            catch (System.Exception ex)
-                            {
-                                _channel.BasicPublish(exchange: "", routingKey: "q1", basicProperties: properties, body: body);
-                                _channel.BasicAck(deliveryTag: eventArgs.DeliveryTag, multiple: false);
-                                _logger.LogWarning(ex.Message == null ? "problem" : ex.Message);
-                                //SendEmail(ex.Message.ToString());
 
-                            }                           
+                                var removeTagObject = RemoveTagObject(response);
+                            }
             };
 
             _channel.BasicConsume(queue: queueName,
@@ -120,29 +125,6 @@ namespace Services.Services
                                   arguments: null,
                                   consumer: consumer);
         }
-
-        //public void SendEmail(string exceptionMessage)
-        //{
-        //    // Send email to the admin
-        //    var smtpClient = new SmtpClient("smtp.gmail.com", 587)
-        //    {
-        //        UseDefaultCredentials = false,
-        //        Credentials = new NetworkCredential("your_email@gmail.com", "your_password"),
-        //        EnableSsl = true
-        //    };
-
-        //    var mailMessage = new MailMessage
-        //    {
-        //        From = new MailAddress("esmaeil.hosseini727@gmail.com"),
-        //        Subject = "RabbitMQ Exception",
-        //        Body = exceptionMessage
-        //    };
-
-        //    mailMessage.To.Add("esmaeil.hosseini727@gmail.com");
-
-        //    // Send the email
-        //    smtpClient.Send(mailMessage);
-        //}
 
         //public void Consume()
         //{
@@ -217,10 +199,23 @@ namespace Services.Services
 
         public bool RemoveTagObject(string bucketName)
         {
-            MinioDtoRemoveTag minioDtoRemoveTag = JsonConvert.DeserializeObject<MinioDtoRemoveTag>(bucketName);            
+            IDictionary<string, string> dict = new Dictionary<string, string>();
+            var collection = new Collection<Cleint.DataModel.Tags.Tag>();
+            var tag = new Tag();
+            tag.Key = "1";
+            tag.Value = "tmp";
+            collection.Add(tag);
+            var tagging = new Tagging();
+            var tagset = new TagSet();
+            tagset.Tag = collection;
+            tagging.TaggingSet = tagset;
+            var objectName = "111.png";
+            //var filePath = "D:\\down\\data\\my.png";
+            var filePath = "C:/111.png";
+            var contentType = "application/octet-stream";
             var endpoint = "127.0.0.1:9000";
-            var accessKey = "EYDDQIQwwgSKCQVZqD8V";
-            var secretKey = "rfI3CkD49bFlfduzLlrujULg2eAFtfwUg2Kr5P1i";
+            var accessKey = "lnYeEijms41YL48gmXXt";
+            var secretKey = "XCXQAXM9YNmCGp03Pu879wu1aJ4rI2qIV4WGGkHX";
             var secure = false;
             var minio = new MinioClient()
                 .WithEndpoint(endpoint)
@@ -231,18 +226,14 @@ namespace Services.Services
             try
             {
                 var args = new RemoveObjectTagsArgs()
-                               .WithBucket(minioDtoRemoveTag.BucketName)
-                               .WithObject(minioDtoRemoveTag.ObjectName);
+                               .WithBucket("test")
+                               .WithObject("111.png");
                 var ff = minio.RemoveObjectTagsAsync(args);
                 return true;
             }
             catch (Exception)
             {
                 throw;
-            }
-            finally 
-            {
-
             }
         }
 

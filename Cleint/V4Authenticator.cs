@@ -65,9 +65,9 @@ internal class V4Authenticator
         string sessionToken = "")
     {
         IsSecure = secure;
-        this.accessKey = "EYDDQIQwwgSKCQVZqD8V";
-        this.secretKey = "rfI3CkD49bFlfduzLlrujULg2eAFtfwUg2Kr5P1i";
-        IsAnonymous = Utils.IsAnonymousClient("EYDDQIQwwgSKCQVZqD8V", "rfI3CkD49bFlfduzLlrujULg2eAFtfwUg2Kr5P1i");
+        this.accessKey = accessKey;
+        this.secretKey = secretKey;
+        IsAnonymous = Utils.IsAnonymousClient(accessKey, secretKey);
         this.region = region;
         this.sessionToken = sessionToken;
     }

@@ -36,6 +36,11 @@ builder.Host.UseSerilog((ctx, lc) => lc
     .MinimumLevel.Error());
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> parent of b08cdd3 (sdad)
 //var app = builder.Build();
 WebApplication? app = builder.Build();
 =======
