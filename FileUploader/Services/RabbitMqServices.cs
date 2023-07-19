@@ -16,6 +16,7 @@ using System.Net;
 
 namespace Services.Services
 {
+<<<<<<< HEAD
 
 
     public class MinioDtoRemoveTag
@@ -24,12 +25,16 @@ namespace Services.Services
         public string ObjectName { get; set; }
     }
     public class RabbitMqServices //: IDisposable //: IRabbitMqServices
+=======
+    public class RabbitMqServices : IDisposable //: IRabbitMqServices
+>>>>>>> parent of bd34366 (add service rabbit)
     {
         private readonly ILogger<RabbitMqServices> _logger;
 
         private readonly IConnection _connection;
         private readonly IModel _channel;
         public const string queueName = "ef";
+<<<<<<< HEAD
         
         public RabbitMqServices()
         {
@@ -42,9 +47,15 @@ namespace Services.Services
                 Password = "guest"
             };
 
+=======
+
+        public RabbitMqServices(string hostName, string queueName)
+        {
+            var factory = new ConnectionFactory() { HostName = hostName };
+>>>>>>> parent of bd34366 (add service rabbit)
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
-            _channel.QueueDeclare(queue: "ef",
+            _channel.QueueDeclare(queue: queueName,
                                   durable: true,
                                   exclusive: false,
                                   autoDelete: false,
@@ -235,10 +246,10 @@ namespace Services.Services
             }
         }
 
-        //public void Dispose()
-        //{
-        //    _channel.Dispose();
-        //    _channel.Dispose();
-        //}
+        public void Dispose()
+        {
+            _channel.Dispose();
+            _channel.Dispose();
+        }
     }
 }

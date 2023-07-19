@@ -13,17 +13,14 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddControllers();
 
-//builder.Services.AddScoped<RabbitMqServices, RabbitMqServices>();
-
+builder.Services.AddSingleton<RabbitMqServices, RabbitMqServices>();
 builder.Services.AddSingleton<RabbitMqServices>(provider =>
 {
     var configuration = provider.GetRequiredService<IConfiguration>();
-    //var hostName = configuration["RabbitMQ:127.0.0.1"];
-    //var queueName = configuration["RabbitMQ:ef"];
-    return new RabbitMqServices();
+    var hostName = configuration["RabbitMQ:127.0.0.1"];
+    var queueName = configuration["RabbitMQ:ef"];
+    return new RabbitMqServices(hostName, queueName);
 });
-
-
 
 builder.Services.AddScoped<MinioClient, MinioClient>();
 
@@ -38,8 +35,15 @@ builder.Host.UseSerilog((ctx, lc) => lc
     // Set default minimum log level
     .MinimumLevel.Error());
 
+<<<<<<< HEAD
 //var app = builder.Build();
 WebApplication? app = builder.Build();
+=======
+
+
+var app = builder.Build();
+//WebApplication? app = builder.Build();
+>>>>>>> parent of bd34366 (add service rabbit)
 var test = app.Services.GetService<RabbitMqServices>();
 test.ConsumeMessages();
 
